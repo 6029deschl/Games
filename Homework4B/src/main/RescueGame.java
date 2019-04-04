@@ -37,9 +37,11 @@ public class RescueGame extends Application {
 
 		// calls update in the Sprite class
 		boat.update();
-		for (Sprite sprite : sprites)
+		for (Sprite sprite : sprites) {
 			sprite.update();
-		if (count++ % 50 == 0)
+			sprite.dx *= 1.01;
+		}
+		if (count++ % 40 == 0)
 			spawn();
 	}
 
