@@ -1,0 +1,22 @@
+*/bin/*
+*/.classpath
+*/.project
+*/.settings
+
+*.DS_Store
+.metadata
+.recommenders
+City
+Flipper
+Skeet
+Skeet
+Homework
+Pong Game
+ComputingSound
+ClassCollisionTest
+ForestFire
+Homework1
+Homework2
+Transformations
+Turning
+city.java
