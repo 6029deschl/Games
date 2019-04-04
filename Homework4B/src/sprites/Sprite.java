@@ -28,10 +28,14 @@ public class Sprite {
 		// right side of the screen
 		Sprite s = null;
 		double x = (Math.random() * 10) + 1;
-		if (x >= 0 && x < 5)
+		if (x >= 0 && x < 3)
 			s = new Sprite("shark.png", 0.7);
-		if (x >= 5 && x <= 10)
+		if (x >= 3 && x <= 6)
 			s = new Sprite("rock.png", 0.2);
+		if (x > 6 && x <= 8)
+			s = new Sprite("person2.png", 1);
+		if (x > 8 && x <= 10)
+			s = new Sprite("rock2.png", 0.5);
 
 		return s;
 	}
