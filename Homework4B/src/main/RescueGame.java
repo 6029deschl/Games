@@ -29,17 +29,22 @@ public class RescueGame extends Application {
 	List<Sprite> sprites = new ArrayList<>();
 	// count of sprites
 	int count = 0;
+	static final int PEOPLE_VALUE = 100;
 	private int score;
-
-	Font smallFont = Font.font("Helvetica", FontWeight.BOLD, 24);
-	Font mediumFont = Font.font("Helvetica", FontWeight.BOLD, 28);
-	Font bigFont = Font.font("Helvetica", FontWeight.BOLD, 36);
 	// state the game is in
 	private boolean playing; // if game playing
 	private int screen; // which screen to show
 	static final int INTRO = 0; // intro screen
 	static final int GAME_OVER = 1; // game over screen
 
+	Font smallFont = Font.font("Helvetica", FontWeight.BOLD, 24);
+	Font mediumFont = Font.font("Helvetica", FontWeight.BOLD, 28);
+	Font bigFont = Font.font("Helvetica", FontWeight.BOLD, 36);
+
+	String scoreString = "Score: ";
+	int stringWidth;
+	String introString[] = new String[8];
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -52,6 +57,9 @@ public class RescueGame extends Application {
 		for (Sprite sprite : sprites) {
 			sprite.update();
 			sprite.dx *= 1.01;
+			if(boat.dx == sprite.x) { //collision
+				screen = GAME_OVER;
+			}
 		}
 		if (count++ % 40 == 0)
 			spawn();
@@ -67,32 +75,50 @@ public class RescueGame extends Application {
 		sprites.add(newSprite);
 
 	}
+	
+	public void incrementScore() {
+		score += PEOPLE_VALUE;
+	}
+	
+	public void gameOver() {
+		if (playing) {
+			playing = false;
+			screen = GAME_OVER;
+		}
+	}
 
 	private void render(GraphicsContext gc) {
-		if (screen == INTRO) {
-			gc.setFill(Color.BLACK);
-			gc.fillRect(0, 0, WIDTH, HEIGHT); // clear buffer
-
-			gc.setFont(smallFont);
-			gc.setFill(Color.CYAN);
-			gc.fillText("Hello" + score, WIDTH - 226, 26);
-			gc.fillText("This is the boat game", WIDTH - 226, 54);
-			// um.render(gc);
-
-			gc.setFont(bigFont);
-
-			gc.setFill(Color.GREEN);
-			gc.fillText("Save the people", (WIDTH - 80) / 2, HEIGHT / 6);
-
-			gc.setFill(Color.MAGENTA);
-			gc.setFont(mediumFont);
-		}
+		if(playing) {
 		gc.setFill(Color.SKYBLUE);
 		gc.fillRect(0, 0, WIDTH, HEIGHT);
-
 		for (Sprite sprite : sprites)
 			sprite.render(gc);
 		boat.render(gc);
+		}
+		else if (screen == INTRO)
+		{
+			gc.setFill(Color.BLACK);
+			gc.fillRect(0,  0,  WIDTH, HEIGHT);
+			
+			gc.setFont(smallFont);
+			gc.setFill(Color.WHITE);
+			gc.fillText(scoreString + score, WIDTH - 226, 26);
+
+			gc.setFont(bigFont);
+
+			gc.setFill(Color.ROYALBLUE);
+			gc.setFont(mediumFont);
+
+			// draw instructions
+			for (int i = 0; i < introString.length - 1; i++) {
+				gc.fillText(introString[i], 26, (3 + i) * HEIGHT / 12);
+			}
+			gc.setFill(Color.WHITE);
+			//System.out.println(introString);
+			gc.fillText(introString[7], (WIDTH - stringWidth) / 2, HEIGHT * 11 / 12);
+
+		}
+		//playing = true;
 	}
 
 	private void initialize() {
@@ -102,6 +128,17 @@ public class RescueGame extends Application {
 
 		playing = false; // not playing
 		screen = INTRO; // show intro screen
+		
+		stringWidth = 200;
+
+		introString[0] = "Welcome to";
+		introString[1] = "~R~E~S~C~U~E~";
+		introString[2] = "save the people";
+		introString[3] = "avoid the sharks and rocks!";
+		introString[4] = "Humans will be Eaten Alive!";
+		introString[5] = "Use the UP and DOWN keys";
+		introString[6] = "to move";
+		introString[7] = "CLICK SCREEN TO BEGIN";
 
 	}
 
@@ -111,14 +148,22 @@ public class RescueGame extends Application {
 		score = 0; // no score
 		update();
 		// gm.newGame(); // call newGame in
-		// um.newGame(); // manager classes
+		 //um.newGame(); // manager classes
 	}
 
 	public void setHandlers(Scene scene) {
-		if (screen == INTRO) {
-
+		if(screen == INTRO) {
+			scene.setOnMousePressed(e -> {
+				playing = true;
+				newGame();
+			});
 		}
-		if (playing) {
+		else if(screen == GAME_OVER) {
+			scene.setOnMousePressed(e -> {
+				screen = INTRO;
+			});
+		}
+			else {
 			scene.setOnKeyPressed(e -> {
 				switch (e.getCode()) {
 				case UP:
@@ -130,31 +175,35 @@ public class RescueGame extends Application {
 				default:
 					break;
 				}
-
+			
 			});
 		}
-		scene.setOnKeyReleased(e -> {
-			switch (e.getCode()) {
-			case UP:
-				boat.setUpKey(false);
-				break;
-			case DOWN:
-				boat.setDownKey(false);
-				break;
-			default:
-				break;
-			}
-		});
+			scene.setOnKeyReleased(e -> {
+				switch (e.getCode()) {
+				case UP:
+					boat.setUpKey(false);
+					break;
+				case DOWN:
+					boat.setDownKey(false);
+					break;
+				default:
+					break;
+				}
+			});
 	}
+
 
 	@Override
 	public void start(Stage theStage) throws Exception {
 
 		Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
-		WIDTH = size.getWidth() - 100;
-		HEIGHT = size.getHeight() - 100;
-
+		//WIDTH = size.getWidth() - 100;
+		//HEIGHT = size.getHeight() - 100;
+		WIDTH = 800;
+		HEIGHT = 600;
+		
+		
 		theStage.setTitle("");
 
 		Group root = new Group();
