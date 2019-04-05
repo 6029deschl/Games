@@ -3,7 +3,6 @@ package sprites;
 import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import main.RescueGame;
 
 public class Sprite {
@@ -15,6 +14,7 @@ public class Sprite {
 	Image img;
 	RescueGame rescue;
 	Sprite sprite;
+	public static int activesprite;
 
 	private boolean keyDown = false;
 	private boolean keyUp = false;
@@ -30,17 +30,26 @@ public class Sprite {
 	public static Sprite random() {
 		// TODO write a function that returns a random sprite that can emerge from the
 		// right side of the screen
+		// public int activesprite = 0;
+		activesprite = 0;
 		Sprite s = null;
 		double x = (Math.random() * 10) + 1;
-		if (x >= 0 && x < 3)
+		if (x >= 0 && x < 3) {
 			s = new Sprite("shark.png", 0.7);
-		if (x >= 3 && x <= 6)
+			activesprite = 1;
+		}
+		if (x >= 3 && x <= 6) {
 			s = new Sprite("rock.png", 0.2);
-		if (x > 6 && x <= 8)
+			activesprite = 2;
+		}
+		if (x > 6 && x <= 8) {
 			s = new Sprite("person2.png", 1);
-		if (x > 8 && x <= 10)
+			activesprite = 3;
+		}
+		if (x > 8 && x <= 10) {
 			s = new Sprite("rock2.png", 0.5);
-
+			activesprite = 4;
+		}
 		return s;
 	}
 
@@ -51,14 +60,16 @@ public class Sprite {
 	public void render(GraphicsContext gc) {
 		gc.drawImage(img, x, y, img.getWidth() * scale, img.getHeight() * scale);
 
-		if (RescueGame.DEBUG) {
-			BoundingBox bb = getBoundingBox();
-			gc.setStroke(Color.WHITE);
+		// if (RescueGame.DEBUG) {
+		// BoundingBox bb = getBoundingBox();
+		// gc.setStroke(Color.WHITE);
 
-			gc.strokeRect(bb.getMinX(), bb.getMinY(), bb.getMaxX() - bb.getMinX(), bb.getMaxY() - bb.getMinY());
+		// gc.strokeRect(bb.getMinX(), bb.getMinY(), bb.getMaxX() - bb.getMinX(),
+		// bb.getMaxY() - bb.getMinY());
 
-		}
 	}
+
+	// }
 
 	public void setUpKey(boolean keyUp) {
 		this.keyUp = keyUp;
