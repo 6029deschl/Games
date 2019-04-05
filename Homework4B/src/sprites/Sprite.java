@@ -15,6 +15,8 @@ public class Sprite {
 	RescueGame rescue;
 	Sprite sprite;
 	public static int activesprite;
+	public static boolean person;
+	public static boolean maybe;
 
 	private boolean keyDown = false;
 	private boolean keyUp = false;
@@ -32,23 +34,28 @@ public class Sprite {
 		// right side of the screen
 		// public int activesprite = 0;
 		activesprite = 0;
+		// person = false;
 		Sprite s = null;
 		double x = (Math.random() * 10) + 1;
 		if (x >= 0 && x < 3) {
 			s = new Sprite("shark.png", 0.7);
 			activesprite = 1;
+			person = true;
 		}
 		if (x >= 3 && x <= 6) {
 			s = new Sprite("rock.png", 0.2);
 			activesprite = 2;
+			person = true;
 		}
 		if (x > 6 && x <= 8) {
 			s = new Sprite("person2.png", 1);
 			activesprite = 3;
+			person = true;
 		}
 		if (x > 8 && x <= 10) {
 			s = new Sprite("rock2.png", 0.5);
 			activesprite = 4;
+			person = true;
 		}
 		return s;
 	}
