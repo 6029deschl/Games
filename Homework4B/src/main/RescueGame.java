@@ -14,6 +14,8 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import sprites.Boat;
@@ -28,6 +30,10 @@ public class RescueGame extends Application {
 	// count of sprites
 	int count = 0;
 	private int score;
+
+	Font smallFont = Font.font("Helvetica", FontWeight.BOLD, 24);
+	Font mediumFont = Font.font("Helvetica", FontWeight.BOLD, 28);
+	Font bigFont = Font.font("Helvetica", FontWeight.BOLD, 36);
 	// state the game is in
 	private boolean playing; // if game playing
 	private int screen; // which screen to show
@@ -63,6 +69,24 @@ public class RescueGame extends Application {
 	}
 
 	private void render(GraphicsContext gc) {
+		if (screen == INTRO) {
+			gc.setFill(Color.BLACK);
+			gc.fillRect(0, 0, WIDTH, HEIGHT); // clear buffer
+
+			gc.setFont(smallFont);
+			gc.setFill(Color.CYAN);
+			gc.fillText("Hello" + score, WIDTH - 226, 26);
+			gc.fillText("This is the boat game", WIDTH - 226, 54);
+			// um.render(gc);
+
+			gc.setFont(bigFont);
+
+			gc.setFill(Color.GREEN);
+			gc.fillText("Save the people", (WIDTH - 80) / 2, HEIGHT / 6);
+
+			gc.setFill(Color.MAGENTA);
+			gc.setFont(mediumFont);
+		}
 		gc.setFill(Color.SKYBLUE);
 		gc.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -91,8 +115,10 @@ public class RescueGame extends Application {
 	}
 
 	public void setHandlers(Scene scene) {
-		if(screen == INTRO) {
-		if (screen != INTRO) {
+		if (screen == INTRO) {
+
+		}
+		if (playing) {
 			scene.setOnKeyPressed(e -> {
 				switch (e.getCode()) {
 				case UP:
@@ -104,21 +130,21 @@ public class RescueGame extends Application {
 				default:
 					break;
 				}
-			
+
 			});
 		}
-			scene.setOnKeyReleased(e -> {
-				switch (e.getCode()) {
-				case UP:
-					boat.setUpKey(false);
-					break;
-				case DOWN:
-					boat.setDownKey(false);
-					break;
-				default:
-					break;
-				}
-			});
+		scene.setOnKeyReleased(e -> {
+			switch (e.getCode()) {
+			case UP:
+				boat.setUpKey(false);
+				break;
+			case DOWN:
+				boat.setDownKey(false);
+				break;
+			default:
+				break;
+			}
+		});
 	}
 
 	@Override
