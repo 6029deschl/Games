@@ -75,9 +75,9 @@ public class RescueGame extends Application {
 			// screen = GAME_OVER;
 			// }
 			if (sprite.collision(boat))
-				if (Sprite.activesprite == 3) {
+				if (Sprite.person == true) {
 					incrementScore();
-					sprite.x = -50;
+					sprite.x = -100;
 				}
 
 				else {
