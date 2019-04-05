@@ -76,11 +76,11 @@ public class RescueGame extends Application {
 			// }
 			if (sprite.collision(boat)) {
 
-				if (Sprite.person == false) {
+				if (sprite.person == false) {
 					decrementScore();
 					sprite.x = -100;
 				}
-				if (Sprite.person == true) {
+				if (sprite.person == true) {
 					incrementScore();
 					sprite.x = -100;
 				} else if (score <= -1000) {
@@ -90,7 +90,7 @@ public class RescueGame extends Application {
 			}
 
 		}
-		if (count++ % 40 == 0)
+		if (count++ % 20 == 0)
 			spawn();
 	}
 
@@ -99,7 +99,7 @@ public class RescueGame extends Application {
 		Sprite newSprite = Sprite.random();
 
 		newSprite.x = WIDTH;
-		newSprite.dx = Math.random() * -5;
+		newSprite.dx = (Math.random() * -5) - count / 100;
 		newSprite.y = Math.random() * HEIGHT;
 		sprites.add(newSprite);
 
