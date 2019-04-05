@@ -16,6 +16,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import sprites.Boat;
@@ -37,6 +38,8 @@ public class RescueGame extends Application {
 	static final int INTRO = 0; // intro screen
 	static final int GAME_OVER = 1; // game over screen
 
+	public static float BBscale = 1.0f;
+
 	Font smallFont = Font.font("Helvetica", FontWeight.BOLD, 24);
 	Font mediumFont = Font.font("Helvetica", FontWeight.BOLD, 28);
 	Font bigFont = Font.font("Helvetica", FontWeight.BOLD, 36);
@@ -44,7 +47,7 @@ public class RescueGame extends Application {
 	String scoreString = "Score: ";
 	int stringWidth;
 	String introString[] = new String[8];
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -57,7 +60,8 @@ public class RescueGame extends Application {
 		for (Sprite sprite : sprites) {
 			sprite.update();
 			sprite.dx *= 1.01;
-			if(boat.dx == sprite.x) { //collision
+			if (boat.x == sprite.x) { // collision
+				gameOver();
 				screen = GAME_OVER;
 			}
 		}
@@ -75,11 +79,11 @@ public class RescueGame extends Application {
 		sprites.add(newSprite);
 
 	}
-	
+
 	public void incrementScore() {
 		score += PEOPLE_VALUE;
 	}
-	
+
 	public void gameOver() {
 		if (playing) {
 			playing = false;
@@ -88,21 +92,15 @@ public class RescueGame extends Application {
 	}
 
 	private void render(GraphicsContext gc) {
-		if(playing) {
-		gc.setFill(Color.SKYBLUE);
-		gc.fillRect(0, 0, WIDTH, HEIGHT);
-		for (Sprite sprite : sprites)
-			sprite.render(gc);
-		boat.render(gc);
-		}
-		else if (screen == INTRO)
-		{
+		if (playing) {
+			gc.setFill(Color.SKYBLUE);
+			gc.fillRect(0, 0, WIDTH, HEIGHT);
+			for (Sprite sprite : sprites)
+				sprite.render(gc);
+			boat.render(gc);
+		} else if (screen == INTRO) {
 			gc.setFill(Color.BLACK);
-			gc.fillRect(0,  0,  WIDTH, HEIGHT);
-			
-			gc.setFont(smallFont);
-			gc.setFill(Color.WHITE);
-			gc.fillText(scoreString + score, WIDTH - 226, 26);
+			gc.fillRect(0, 0, WIDTH, HEIGHT);
 
 			gc.setFont(bigFont);
 
@@ -114,11 +112,17 @@ public class RescueGame extends Application {
 				gc.fillText(introString[i], 26, (3 + i) * HEIGHT / 12);
 			}
 			gc.setFill(Color.WHITE);
-			//System.out.println(introString);
+			// System.out.println(introString);
 			gc.fillText(introString[7], (WIDTH - stringWidth) / 2, HEIGHT * 11 / 12);
 
+			gc.setFont(smallFont);
+			gc.setFill(Color.WHITE);
+			gc.setTextAlign(TextAlignment.RIGHT);
+			gc.fillText(scoreString + score, WIDTH * 0.82, HEIGHT * 0.11);
+			gc.setTextAlign(TextAlignment.LEFT);
+
 		}
-		//playing = true;
+		// playing = true;
 	}
 
 	private void initialize() {
@@ -128,7 +132,7 @@ public class RescueGame extends Application {
 
 		playing = false; // not playing
 		screen = INTRO; // show intro screen
-		
+
 		stringWidth = 200;
 
 		introString[0] = "Welcome to";
@@ -148,62 +152,63 @@ public class RescueGame extends Application {
 		score = 0; // no score
 		update();
 		// gm.newGame(); // call newGame in
-		 //um.newGame(); // manager classes
+		// um.newGame(); // manager classes
 	}
 
 	public void setHandlers(Scene scene) {
-		if(screen == INTRO) {
-			scene.setOnMousePressed(e -> {
+		scene.setOnMousePressed(e -> {
+			switch (screen) {
+			case INTRO:
 				playing = true;
 				newGame();
-			});
-		}
-		else if(screen == GAME_OVER) {
-			scene.setOnMousePressed(e -> {
+				break;
+			case GAME_OVER:
 				screen = INTRO;
-			});
-		}
-			else {
-			scene.setOnKeyPressed(e -> {
-				switch (e.getCode()) {
-				case UP:
-					boat.setUpKey(true);
-					break;
-				case DOWN:
-					boat.setDownKey(true);
-					break;
-				default:
-					break;
-				}
-			
-			});
-		}
-			scene.setOnKeyReleased(e -> {
-				switch (e.getCode()) {
-				case UP:
-					boat.setUpKey(false);
-					break;
-				case DOWN:
-					boat.setDownKey(false);
-					break;
-				default:
-					break;
-				}
-			});
-	}
+				break;
+			default:
+				break;
+			}
+		});
+		scene.setOnKeyPressed(e -> {
+			if (!playing)
+				return;
+			switch (e.getCode()) {
+			case UP:
+				boat.setUpKey(true);
+				break;
+			case DOWN:
+				boat.setDownKey(true);
+				break;
+			default:
+				break;
+			}
 
+		});
+
+		scene.setOnKeyReleased(e -> {
+			if (!playing)
+				return;
+			switch (e.getCode()) {
+			case UP:
+				boat.setUpKey(false);
+				break;
+			case DOWN:
+				boat.setDownKey(false);
+				break;
+			default:
+				break;
+			}
+		});
+	}
 
 	@Override
 	public void start(Stage theStage) throws Exception {
 
 		Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
-		//WIDTH = size.getWidth() - 100;
-		//HEIGHT = size.getHeight() - 100;
-		WIDTH = 800;
-		HEIGHT = 600;
-		
-		
+		WIDTH = size.getWidth() * 0.8;
+		HEIGHT = size.getHeight() * 0.6;
+
 		theStage.setTitle("");
 
 		Group root = new Group();
