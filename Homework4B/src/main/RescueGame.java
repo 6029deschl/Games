@@ -69,20 +69,25 @@ public class RescueGame extends Application {
 		boat.update();
 		for (Sprite sprite : sprites) {
 			sprite.update();
-			sprite.dx *= 1.01;
+			// sprite.dx *= 1.01;
 			// if (boat.x == sprite.x) { // collision
 			// gameOver();
 			// screen = GAME_OVER;
 			// }
-			if (sprite.collision(boat))
+			if (sprite.collision(boat)) {
+
+				if (Sprite.person == false) {
+					decrementScore();
+					sprite.x = -100;
+				}
 				if (Sprite.person == true) {
 					incrementScore();
 					sprite.x = -100;
-				}
-
-				else {
+				} else if (score <= -1000) {
 					gameOver();
 				}
+
+			}
 
 		}
 		if (count++ % 40 == 0)
@@ -102,6 +107,10 @@ public class RescueGame extends Application {
 
 	public void incrementScore() {
 		score += PEOPLE_VALUE;
+	}
+
+	public void decrementScore() {
+		score -= PEOPLE_VALUE;
 	}
 
 	public void gameOver() {
@@ -146,6 +155,19 @@ public class RescueGame extends Application {
 			gc.setTextAlign(TextAlignment.RIGHT);
 			gc.fillText(scoreString + score, WIDTH * 0.82, HEIGHT * 0.11);
 			gc.setTextAlign(TextAlignment.LEFT);
+
+		} else if (screen == GAME_OVER) {
+			gc.setFill(Color.BLACK);
+			gc.fillRect(0, 0, WIDTH, HEIGHT);
+
+			gc.setFont(bigFont);
+
+			gc.setFill(Color.WHITE);
+			gc.fillText("Game Over.", WIDTH * 0.12, HEIGHT * 0.11);
+
+			gc.setFont(smallFont);
+			gc.setFill(Color.WHITE);
+			gc.fillText("Click anywhere to start over", WIDTH * 0.12, HEIGHT * 0.31);
 
 		}
 		// playing = true;
