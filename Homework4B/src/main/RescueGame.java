@@ -20,6 +20,9 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import sprites.Boat;
+import sprites.People;
+import sprites.Rock;
+import sprites.Shark;
 import sprites.Sprite;
 
 public class RescueGame extends Application {
@@ -27,6 +30,9 @@ public class RescueGame extends Application {
 	final int FPS = 30;
 	public static double WIDTH, HEIGHT;
 	Sprite boat;
+	People people;
+	Shark shark;
+	Rock rock;
 	List<Sprite> sprites = new ArrayList<>();
 	// count of sprites
 	int count = 0;
@@ -37,6 +43,8 @@ public class RescueGame extends Application {
 	private int screen; // which screen to show
 	static final int INTRO = 0; // intro screen
 	static final int GAME_OVER = 1; // game over screen
+
+	// Shark shark;
 
 	public static float BBscale = 0.9f;
 
@@ -62,12 +70,20 @@ public class RescueGame extends Application {
 		for (Sprite sprite : sprites) {
 			sprite.update();
 			sprite.dx *= 1.01;
-			if (boat.x == sprite.x) { // collision
-				gameOver();
-				screen = GAME_OVER;
-			}
+			// if (boat.x == sprite.x) { // collision
+			// gameOver();
+			// screen = GAME_OVER;
+			// }
 			if (sprite.collision(boat))
-				gameOver();
+				if (Sprite.activesprite == 3) {
+					incrementScore();
+					sprite.x = -50;
+				}
+
+				else {
+					gameOver();
+				}
+
 		}
 		if (count++ % 40 == 0)
 			spawn();
@@ -99,6 +115,12 @@ public class RescueGame extends Application {
 		if (playing) {
 			gc.setFill(Color.SKYBLUE);
 			gc.fillRect(0, 0, WIDTH, HEIGHT);
+
+			gc.setFont(smallFont);
+			gc.setFill(Color.WHITE);
+			gc.setTextAlign(TextAlignment.RIGHT);
+			gc.fillText(scoreString + score, WIDTH * 0.82, HEIGHT * 0.11);
+			gc.setTextAlign(TextAlignment.LEFT);
 			for (Sprite sprite : sprites)
 				sprite.render(gc);
 			boat.render(gc);
@@ -139,13 +161,13 @@ public class RescueGame extends Application {
 
 		stringWidth = 200;
 
-		introString[0] = "Welcome to";
-		introString[1] = "~R~E~S~C~U~E~";
-		introString[2] = "save the people";
+		introString[0] = "          Welcome to";
+		introString[1] = "      ~R~E~S~C~U~E~";
+		introString[2] = "       save the people,";
 		introString[3] = "avoid the sharks and rocks!";
-		introString[4] = "Humans will be Eaten Alive!";
+		introString[4] = "                         ";
 		introString[5] = "Use the UP and DOWN keys";
-		introString[6] = "to move";
+		introString[6] = "                to move";
 		introString[7] = "CLICK SCREEN TO BEGIN";
 
 	}
