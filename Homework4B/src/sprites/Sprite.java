@@ -3,6 +3,7 @@ package sprites;
 import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import main.RescueGame;
 
 public class Sprite {
@@ -12,7 +13,6 @@ public class Sprite {
 	double scale = 1.0;
 
 	Image img;
-	Boat boat;
 	RescueGame rescue;
 	Sprite sprite;
 
@@ -31,7 +31,7 @@ public class Sprite {
 		// TODO write a function that returns a random sprite that can emerge from the
 		// right side of the screen
 		Sprite s = null;
-		double x = (Math.random() * 3) + 1;
+		double x = (Math.random() * 10) + 1;
 		if (x >= 0 && x < 3)
 			s = new Sprite("shark.png", 0.7);
 		if (x >= 3 && x <= 6)
@@ -50,6 +50,14 @@ public class Sprite {
 
 	public void render(GraphicsContext gc) {
 		gc.drawImage(img, x, y, img.getWidth() * scale, img.getHeight() * scale);
+
+		if (RescueGame.DEBUG) {
+			BoundingBox bb = getBoundingBox();
+			gc.setStroke(Color.WHITE);
+
+			gc.strokeRect(bb.getMinX(), bb.getMinY(), bb.getMaxX() - bb.getMinX(), bb.getMaxY() - bb.getMinY());
+
+		}
 	}
 
 	public void setUpKey(boolean keyUp) {
@@ -70,29 +78,27 @@ public class Sprite {
 		if ((keyUp) && (this.y > 0))
 			this.y = this.y - 10;
 
-		if (collision(boat)) {
-			boat.dx = 0;
-			boat.dy = 0;
-
-			rescue.gameOver();
-		}
+		/*
+		 * if (boat != null && this.collision(boat)) { boat.dx = 0; boat.dy = 0;
+		 * 
+		 * System.out.println("Game Over!"); rescue.gameOver(); }
+		 */
 
 		// if (boat.x == shark.x)
 		// rescue.gameOver();
 	}
 
 	public BoundingBox getBoundingBox() {
-		double width = img.getWidth();
-		double height = img.getHeight();
-		double xoff = (width * (1.0f - RescueGame.BBscale) / 2.0f);
-		double yoff = (height * (1.0f - RescueGame.BBscale) / 2.0f);
-		double bbw = (width * RescueGame.BBscale);
-		double bbh = (height * RescueGame.BBscale);
-		return new BoundingBox(x + xoff, y + yoff, bbw, bbh);
+		double width = img.getWidth() * scale;
+		double height = img.getHeight() * scale;
+		// double xoff = (width * (1.0f - RescueGame.BBscale) / 2.0f);
+		// double yoff = (height * (1.0f - RescueGame.BBscale) / 2.0f);
+		// double bbw = (width * RescueGame.BBscale);
+		// double bbh = (height * RescueGame.BBscale);
+		return new BoundingBox(x, y, width, height);// xoff, y + yoff, bbw, bbh);
 	}
 
 	public boolean collision(Sprite h) {
-		BoundingBox bb = getBoundingBox();
-		return bb.intersects(h.getBoundingBox());
+		return getBoundingBox().intersects(h.getBoundingBox());
 	}
 }
