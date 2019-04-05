@@ -38,7 +38,9 @@ public class RescueGame extends Application {
 	static final int INTRO = 0; // intro screen
 	static final int GAME_OVER = 1; // game over screen
 
-	public static float BBscale = 1.0f;
+	public static float BBscale = 0.9f;
+
+	public static boolean DEBUG = false;
 
 	Font smallFont = Font.font("Helvetica", FontWeight.BOLD, 24);
 	Font mediumFont = Font.font("Helvetica", FontWeight.BOLD, 28);
@@ -64,6 +66,8 @@ public class RescueGame extends Application {
 				gameOver();
 				screen = GAME_OVER;
 			}
+			if (sprite.collision(boat))
+				gameOver();
 		}
 		if (count++ % 40 == 0)
 			spawn();
