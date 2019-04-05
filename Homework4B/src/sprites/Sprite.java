@@ -1,5 +1,6 @@
 package sprites;
 
+import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import main.RescueGame;
@@ -10,7 +11,10 @@ public class Sprite {
 	public double dx, dy;
 	double scale = 1.0;
 
-	private Image img;
+	Image img;
+	Boat boat;
+	RescueGame rescue;
+	Sprite sprite;
 
 	private boolean keyDown = false;
 	private boolean keyUp = false;
@@ -27,7 +31,7 @@ public class Sprite {
 		// TODO write a function that returns a random sprite that can emerge from the
 		// right side of the screen
 		Sprite s = null;
-		double x = (Math.random() * 10) + 1;
+		double x = (Math.random() * 3) + 1;
 		if (x >= 0 && x < 3)
 			s = new Sprite("shark.png", 0.7);
 		if (x >= 3 && x <= 6)
@@ -61,9 +65,34 @@ public class Sprite {
 		this.x += this.dx;
 		this.y += this.dy;
 
-		if (keyDown && (this.y < RescueGame.HEIGHT - 50))
+		if ((keyDown) && (this.y < RescueGame.HEIGHT))
 			this.y = this.y + 10;
-		if (keyUp && (this.y > 0))
+		if ((keyUp) && (this.y > 0))
 			this.y = this.y - 10;
+
+		if (collision(boat)) {
+			boat.dx = 0;
+			boat.dy = 0;
+
+			rescue.gameOver();
+		}
+
+		// if (boat.x == shark.x)
+		// rescue.gameOver();
+	}
+
+	public BoundingBox getBoundingBox() {
+		double width = img.getWidth();
+		double height = img.getHeight();
+		double xoff = (width * (1.0f - RescueGame.BBscale) / 2.0f);
+		double yoff = (height * (1.0f - RescueGame.BBscale) / 2.0f);
+		double bbw = (width * RescueGame.BBscale);
+		double bbh = (height * RescueGame.BBscale);
+		return new BoundingBox(x + xoff, y + yoff, bbw, bbh);
+	}
+
+	public boolean collision(Sprite h) {
+		BoundingBox bb = getBoundingBox();
+		return bb.intersects(h.getBoundingBox());
 	}
 }
