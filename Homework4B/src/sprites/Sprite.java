@@ -15,8 +15,8 @@ public class Sprite {
 	RescueGame rescue;
 	Sprite sprite;
 	public static int activesprite;
-	public static boolean person;
-	public static boolean bad;
+	public boolean person;
+	public boolean bad;
 	static People people;
 	static Shark shark;
 	static Rock rock;
@@ -39,29 +39,29 @@ public class Sprite {
 		activesprite = 0;
 		// person = false;
 		Sprite s = null;
-		double x = (Math.random() * 10) + 1;
+		int x = (int) (Math.random() * 10) + 1;
 		if (x >= 0 && x < 3) {
 			s = new Sprite("shark.png", 0.7);
 			// activesprite = 1;
-			bad = true;
-			person = false;
+			s.bad = true;
+			s.person = false;
 		}
 		if (x >= 3 && x <= 6) {
 			s = new Sprite("rock.png", 0.2);
 			// activesprite = 2;
-			bad = true;
-			person = false;
+			s.bad = true;
+			s.person = false;
 		}
 		if (x > 6 && x <= 8) {
 			s = new Sprite("person2.png", 1);
 			// activesprite = 3;
-			person = true;
+			s.person = true;
 		}
 		if (x > 8 && x <= 10) {
 			s = new Sprite("rock2.png", 0.5);
 			/// activesprite = 4;
-			bad = true;
-			person = false;
+			s.bad = true;
+			s.person = false;
 		}
 		return s;
 	}
