@@ -27,6 +27,12 @@ public class RescueGame extends Application {
 	List<Sprite> sprites = new ArrayList<>();
 	// count of sprites
 	int count = 0;
+	private int score;
+	// state the game is in
+	private boolean playing; // if game playing
+	private int screen; // which screen to show
+	static final int INTRO = 0; // intro screen
+	static final int GAME_OVER = 1; // game over screen
 
 	public static void main(String[] args) {
 		launch(args);
@@ -69,33 +75,50 @@ public class RescueGame extends Application {
 		boat = new Boat();
 		boat.x = 50;
 		boat.y = HEIGHT / 2;
+
+		playing = false; // not playing
+		screen = INTRO; // show intro screen
+
+	}
+
+	// initialize params for new game
+	public void newGame() {
+		playing = true;
+		score = 0; // no score
+		update();
+		// gm.newGame(); // call newGame in
+		// um.newGame(); // manager classes
 	}
 
 	public void setHandlers(Scene scene) {
-		scene.setOnKeyPressed(e -> {
-			switch (e.getCode()) {
-			case UP:
-				boat.setUpKey(true);
-				break;
-			case DOWN:
-				boat.setDownKey(true);
-				break;
-			default:
-				break;
-			}
-		});
-		scene.setOnKeyReleased(e -> {
-			switch (e.getCode()) {
-			case UP:
-				boat.setUpKey(false);
-				break;
-			case DOWN:
-				boat.setDownKey(false);
-				break;
-			default:
-				break;
-			}
-		});
+		if(screen == INTRO) {
+		if (screen != INTRO) {
+			scene.setOnKeyPressed(e -> {
+				switch (e.getCode()) {
+				case UP:
+					boat.setUpKey(true);
+					break;
+				case DOWN:
+					boat.setDownKey(true);
+					break;
+				default:
+					break;
+				}
+			
+			});
+		}
+			scene.setOnKeyReleased(e -> {
+				switch (e.getCode()) {
+				case UP:
+					boat.setUpKey(false);
+					break;
+				case DOWN:
+					boat.setDownKey(false);
+					break;
+				default:
+					break;
+				}
+			});
 	}
 
 	@Override
