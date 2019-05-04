@@ -1,4 +1,3 @@
-
 public class Ball {
 	int x, y, z;
 
