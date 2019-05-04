@@ -1,4 +1,7 @@
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -46,14 +49,20 @@ public class NewWorld extends Application {
 	private double mouseDeltaY;
 
 	Sphere ball;
-	int bx = 180;
-	int by = 5;
-	static int bz = 200;
+	Box rectangle;
+	int bx = 0;
+	int by = 35;
+	static int bz = 800;
+	static int rx = 0;
 
 	Image grass = new Image("grass.jpg");
 	Image bark = new Image("bark.jpg");
 	Image leaves = new Image("grass.jpg");
 	Image fur = new Image("bark.jpg");
+	
+	ArrayList<Group> looks = new ArrayList<Group>();
+	
+	//String[] lookFiles = {"Goal"};
 
 	private void constructWorld(Group root) {
 
@@ -64,7 +73,7 @@ public class NewWorld extends Application {
 		root.getChildren().add(pl);
 
 		final PhongMaterial blackMaterial = new PhongMaterial();
-		blackMaterial.setDiffuseMap(fur);
+		blackMaterial.setDiffuseColor(Color.FLORALWHITE);
 		ball = new Sphere(10.0, 120);
 		ball.setMaterial(blackMaterial);
 
@@ -84,23 +93,53 @@ public class NewWorld extends Application {
 		rt.setAxis(Rotate.X_AXIS);
 		rt.setInterpolator(Interpolator.LINEAR);
 		rt.setCycleCount(Animation.INDEFINITE);
-		rt.setAutoReverse(true);
+		//rt.setAutoReverse(true);
 		rt.play();
 
 		final PhongMaterial greenMaterial = new PhongMaterial();
 		greenMaterial.setDiffuseMap(grass);
-		Box box3 = new Box(1000, 50, 1000);
+		Box box3 = new Box(500, 25, 5000);
 		box3.setMaterial(greenMaterial);
 
-		box3.setTranslateX(0);
+		box3.setTranslateX(bx);
 		box3.setTranslateY(60);
 		box3.setTranslateZ(0);
+		
+		final PhongMaterial goalMaterial = new PhongMaterial();
+		goalMaterial.setDiffuseColor(Color.BLUE);
+		Box rectangle = new Box(25, 10, 10);
+		rectangle.setMaterial(goalMaterial);
 
-		root.getChildren().addAll(spinner, box3);// sphere3, sphere2, sphere, cylinder);
-	}
+		rectangle.setTranslateX(0);
+		rectangle.setTranslateY(-60);
+		rectangle.setTranslateZ(-1300);
+		
+		root.getChildren().addAll(spinner, box3, rectangle);// sphere3, sphere2, sphere, cylinder);
+		
+		
+		/*
+		 * Group goal1 = new Group(); ObjView drvr = new ObjView(); try {
+		 * drvr.load(ClassLoader.getSystemResource("Goal.obj").toString()); } catch
+		 * (IOException e) { System.out.println("Trouble loading model");
+		 * e.printStackTrace(); } Group goal = drvr.getRoot(); goal.setScaleX(30);
+		 * goal.setScaleY(-30); goal.setScaleZ(-30);
+		 * //goal.setRotationAxis(Rotate.Y_AXIS); //goal.setRotate(90);
+		 * goal.setTranslateX(400); goal.setTranslateY(-150); looks.add(goal);
+		 * 
+		 * goal1.getChildren().add(goal);
+		 * 
+		 * //root.getChildren().add(goal1);
+		 */		}
 
 	public static void rollBall(Sphere b) {
 		b.setTranslateZ(bz -= 3);
+	}
+	
+	public static void moveRectLeft(Box r) {
+		r.setTranslateX(rx -= 3);
+	}
+	public static void moveRectRight(Box r) {
+		r.setTranslateX(rx += 3);
 	}
 
 	@Override
@@ -119,8 +158,9 @@ public class NewWorld extends Application {
 		scene.setCamera(camera);
 		// translations through dolly
 		cameraDolly = new Group();
-		cameraDolly.setTranslateZ(-1000);
-		cameraDolly.setTranslateX(200);
+		cameraDolly.setTranslateZ(-1500);
+		cameraDolly.setTranslateX(0);
+		cameraDolly.setTranslateY(-100);
 		cameraDolly.getChildren().add(camera);
 		sceneRoot.getChildren().add(cameraDolly);
 		// rotation transforms
@@ -152,6 +192,12 @@ public class NewWorld extends Application {
 			}
 			if (keycode == KeyCode.S) {
 				delta = new Point3D(0, change * 2, 0);
+			}
+			if (keycode == KeyCode.L) {
+				moveRectRight(rectangle);
+			}
+			if (keycode == KeyCode.K) {
+				moveRectLeft(rectangle);
 			}
 			if (delta != null) {
 				Point3D delta2 = camera.localToParent(delta);
