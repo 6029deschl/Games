@@ -132,7 +132,7 @@ public class World1 extends Application {
 	}
 
 	public static void rollBall(Sphere b) {
-		b.setTranslateZ(bz - 1);
+		b.setTranslateZ(bz -= 3);
 	}
 
 	@Override
