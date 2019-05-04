@@ -1,7 +1,7 @@
 
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.lang.Math;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -50,10 +50,12 @@ public class NewWorld extends Application {
 
 	Sphere ball;
 	Box rectangle;
-	int bx = 0;
-	int by = 35;
+	InstructionText text;
+	static int bx = 0;
+	static int by = 35;
 	static int bz = 800;
 	static int rx = 0;
+	static int rz = -1300;
 
 	Image grass = new Image("grass.jpg");
 	Image bark = new Image("bark.jpg");
@@ -98,21 +100,21 @@ public class NewWorld extends Application {
 
 		final PhongMaterial greenMaterial = new PhongMaterial();
 		greenMaterial.setDiffuseMap(grass);
-		Box box3 = new Box(500, 25, 5000);
+		Box box3 = new Box(400, 25, 5000);
 		box3.setMaterial(greenMaterial);
 
-		box3.setTranslateX(bx);
+		box3.setTranslateX(0);
 		box3.setTranslateY(60);
 		box3.setTranslateZ(0);
 		
 		final PhongMaterial goalMaterial = new PhongMaterial();
 		goalMaterial.setDiffuseColor(Color.BLUE);
-		Box rectangle = new Box(25, 10, 10);
+		rectangle = new Box(35, 10, 10);
 		rectangle.setMaterial(goalMaterial);
 
-		rectangle.setTranslateX(0);
-		rectangle.setTranslateY(-60);
-		rectangle.setTranslateZ(-1300);
+		rectangle.setTranslateX(rx);
+		rectangle.setTranslateY(40);
+		rectangle.setTranslateZ(rz);
 		
 		root.getChildren().addAll(spinner, box3, rectangle);// sphere3, sphere2, sphere, cylinder);
 		
@@ -132,16 +134,81 @@ public class NewWorld extends Application {
 		 */		}
 
 	public static void rollBall(Sphere b) {
-		b.setTranslateZ(bz -= 3);
+		b.setTranslateZ(bz -= 20);
+		b.setTranslateX(bx);
+		b.setTranslateY(by);
+		collide(b);
 	}
 	
-	public static void moveRectLeft(Box r) {
-		r.setTranslateX(rx -= 3);
+	public static void collide(Sphere b) {
+		//if ((rz == bz+20) && (bx-10 >= rx-30) && (bx <= rx + 60)) {
+		if ((rz >=bz-20) && (bx-10 >= rx-20) && (bx+10 <= rx + 20)) {
+			bz = 800;
+			if(Math.random() < 0.5) {
+				//b.setTranslateX(bx + Math.random()*100);
+				bx = (int) (Math.random() * 100);
+			}
+			else
+			//	b.setTranslateX(bx + Math.random()*-100);
+				bx = (int) (Math.random() * -100);
+		} else if (bz <= -1500)
+			bz = 800;
 	}
-	public static void moveRectRight(Box r) {
-		r.setTranslateX(rx += 3);
+	
+	public void moveRectLeft(Boolean b) {
+//		if (b)
+//		{
+			if(rx >= -100) {
+				rectangle.setTranslateX(rx -= 3);
+			}
+			else
+				rectangle.setTranslateX(rx = -100);
+//		}
+//		else
+//			rectangle.setTranslateX(rx = 0);
+	}
+	public void moveRectRight(Boolean b) {
+//		if(b)
+//		{
+			if(rx <= 100) {
+				rectangle.setTranslateX(rx += 3);
+			}
+//		}
+//		else
+//			rectangle.setTranslateX(rx = 100);
 	}
 
+	public void setHandlers(Scene scene) {
+		
+		scene.setOnKeyPressed(e -> {
+			switch (e.getCode()) {
+			case LEFT:
+				moveRectLeft(true);
+				break;
+			case RIGHT:
+				moveRectRight(true);
+				break;
+			default:
+				break;
+			}
+
+		});
+
+//		scene.setOnKeyReleased(e -> {
+//			switch (e.getCode()) {
+//			case RIGHT:
+//				moveRectRight(false);
+//				break;
+//			case LEFT:
+//				moveRectLeft(false);
+//				break;
+//			default:
+//				break;
+//			}
+//		});
+	}
+	
+	
 	@Override
 	public void start(Stage primaryStage) {
 
@@ -158,9 +225,9 @@ public class NewWorld extends Application {
 		scene.setCamera(camera);
 		// translations through dolly
 		cameraDolly = new Group();
-		cameraDolly.setTranslateZ(-1500);
+		cameraDolly.setTranslateZ(-1600);
 		cameraDolly.setTranslateX(0);
-		cameraDolly.setTranslateY(-100);
+		cameraDolly.setTranslateY(-15);
 		cameraDolly.getChildren().add(camera);
 		sceneRoot.getChildren().add(cameraDolly);
 		// rotation transforms
@@ -168,6 +235,7 @@ public class NewWorld extends Application {
 		Rotate yRotate = new Rotate(0, 0, 0, 0, Rotate.Y_AXIS);
 		camera.getTransforms().addAll(xRotate, yRotate);
 
+		
 		// Use keyboard to control camera position
 		scene.setOnKeyPressed(event -> {
 			double change = cameraQuantity;
@@ -193,12 +261,14 @@ public class NewWorld extends Application {
 			if (keycode == KeyCode.S) {
 				delta = new Point3D(0, change * 2, 0);
 			}
-			if (keycode == KeyCode.L) {
-				moveRectRight(rectangle);
-			}
-			if (keycode == KeyCode.K) {
-				moveRectLeft(rectangle);
-			}
+			//if (keycode == KeyCode.RIGHT) {
+				//moveRectRight(rectangle);
+				
+			//}
+			//if (keycode == KeyCode.LEFT) {
+				//moveRectLeft(rectangle);
+				
+			//}
 			if (delta != null) {
 				Point3D delta2 = camera.localToParent(delta);
 				cameraDolly.setTranslateX(cameraDolly.getTranslateX() + delta2.getX());
@@ -230,7 +300,9 @@ public class NewWorld extends Application {
 		KeyFrame kf = new KeyFrame(Duration.millis(1000 / FPS), e -> {
 			// update position
 			rollBall(ball);
+			//collide();
 		});
+		setHandlers(scene);
 		Timeline mainLoop = new Timeline(kf);
 		mainLoop.setCycleCount(Animation.INDEFINITE);
 		mainLoop.play();
