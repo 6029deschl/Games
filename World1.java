@@ -14,7 +14,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
@@ -63,41 +62,9 @@ public class World1 extends Application {
 		pl.setTranslateZ(-2000);
 		root.getChildren().add(pl);
 
-		final PhongMaterial g2Material = new PhongMaterial();
-		g2Material.setDiffuseMap(leaves);
-		final Sphere sphere = new Sphere(70);
-		sphere.setMaterial(g2Material);
-
-		sphere.setTranslateZ(-20);
-		sphere.setTranslateY(-160);
-		sphere.setTranslateX(5);
-
-		final Sphere sphere2 = new Sphere(70);
-		sphere2.setMaterial(g2Material);
-
-		sphere2.setTranslateZ(50);
-		sphere2.setTranslateY(-160);
-		sphere2.setTranslateX(-15);
-
-		final Sphere sphere3 = new Sphere(70);
-		sphere3.setMaterial(g2Material);
-
-		sphere3.setTranslateZ(15);
-		sphere3.setTranslateY(-200);
-		sphere3.setTranslateX(-10);
-
-		final PhongMaterial brownMaterial = new PhongMaterial();
-		brownMaterial.setDiffuseMap(bark);
-		Cylinder cylinder = new Cylinder(40, 180);
-		cylinder.setMaterial(brownMaterial);
-
-		cylinder.setTranslateX(-10);
-		cylinder.setTranslateY(-60);
-		cylinder.setTranslateZ(20);
-
 		final PhongMaterial blackMaterial = new PhongMaterial();
 		blackMaterial.setDiffuseMap(fur);
-		ball = new Sphere(40.0, 120);
+		ball = new Sphere(10.0, 120);
 		ball.setMaterial(blackMaterial);
 
 		ball.setTranslateX(bx);
@@ -128,7 +95,7 @@ public class World1 extends Application {
 		box3.setTranslateY(60);
 		box3.setTranslateZ(0);
 
-		root.getChildren().addAll(spinner, box3, sphere3, sphere2, sphere, cylinder);
+		root.getChildren().addAll(spinner, box3);// sphere3, sphere2, sphere, cylinder);
 	}
 
 	public static void rollBall(Sphere b) {
